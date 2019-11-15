@@ -54,6 +54,7 @@ describe("Subscription", () => {
         title: String!
       }`);
     await server.start();
+    // tslint:disable-next-line: no-console
     console.log(`Running on ${server.url()}`);
 
     offix = await createClient({

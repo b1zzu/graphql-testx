@@ -86,6 +86,7 @@ describe("Offline mutations", () => {
         author: String!
       }`);
     await server.start();
+    // tslint:disable-next-line: no-console
     console.log(`Running on ${server.url()}`);
 
     networkStatus = new ToggleableNetworkStatus();
