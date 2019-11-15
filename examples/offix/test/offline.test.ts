@@ -2,38 +2,14 @@ import "cross-fetch/polyfill";
 import "fake-indexeddb/auto";
 
 import gql from "graphql-tag";
-import {
-  ApolloOfflineClient,
-  createClient,
-  NetworkStatus,
-  NetworkStatusChangeCallback
-} from "offix-client";
+import { ApolloOfflineClient, createClient } from "offix-client";
 import { TestxServer } from "../../../src";
-
-class ToggleableNetworkStatus implements NetworkStatus {
-  private online = true;
-  private callbacks: NetworkStatusChangeCallback[] = [];
-
-  public onStatusChangeListener(callback: NetworkStatusChangeCallback): void {
-    this.callbacks.push(callback);
-  }
-
-  public async isOffline(): Promise<boolean> {
-    return !this.online;
-  }
-
-  public setOnline(online: boolean): void {
-    this.online = online;
-    for (const callback of this.callbacks) {
-      callback.onStatusChange({ online });
-    }
-  }
-}
+import { ToggleableNetworkStatus } from "../utils/network";
 
 // TODO: remove this queries once we expose client queries/mutations
 // TODO: from the TestxServer API
 // TODO: https://github.com/aerogear/graphql-testx/issues/15
-export const FIND_ALL_TASKS = gql`
+const FIND_ALL_TASKS = gql`
   query findAllTasks {
     findAllTasks {
       id
@@ -45,7 +21,7 @@ export const FIND_ALL_TASKS = gql`
   }
 `;
 
-export const ADD_TASK = gql`
+const ADD_TASK = gql`
   mutation createTask(
     $version: Int!
     $description: String!
@@ -69,7 +45,7 @@ export const ADD_TASK = gql`
   }
 `;
 
-export const UPDATE_TASK = gql`
+const UPDATE_TASK = gql`
   mutation updateTask(
     $id: ID!
     $version: Int!
