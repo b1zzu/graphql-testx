@@ -1,5 +1,6 @@
 import { ApolloServer } from "apollo-server-express";
 import express from "express";
+import { PubSub } from "graphql-subscriptions";
 import { Server } from "http";
 import Knex from "knex";
 import { BackendBuilder } from "./BackendBuilder";
@@ -11,10 +12,10 @@ const defaultConfig = {
   findAll: true,
   find: true,
   delete: true,
-  subCreate: false,
-  subUpdate: false,
-  subDelete: false,
-  disableGen: false,
+  subCreate: true,
+  subUpdate: true,
+  subDelete: true,
+  disableGen: false
 };
 
 export class TestxServer {
@@ -48,10 +49,13 @@ export class TestxServer {
     const { typeDefs, resolvers, dbConnection } = await backendBuilder.generateBackend();
     this.dbConnection = dbConnection;
 
+    const pubsub = new PubSub();
+
     const context = async ({ req }: { req: express.Request }) => {
       return {
         req,
         db: dbConnection,
+        pubsub
       };
     };
 
